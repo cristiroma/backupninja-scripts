@@ -1,0 +1,9 @@
+### backupninja mysql config files $$$
+
+databases	= all
+backupdir	= /backup
+hotcopy 	= no
+sqldump		= yes
+compress	= yes
+dbusername	= root
+dbpassword	= p0kemon 

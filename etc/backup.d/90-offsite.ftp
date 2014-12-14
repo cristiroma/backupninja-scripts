@@ -1,0 +1,13 @@
+### Implements ftp handler ###
+
+[source]
+from = /backup
+
+[dest]
+
+dest = backup
+host = ftp.server.com
+port = 21
+user = ftpuser
+password = ftpsecret
+

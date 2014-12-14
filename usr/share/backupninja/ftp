@@ -1,0 +1,73 @@
+# -*- mode: sh; sh-basic-offset: 3; indent-tabs-mode: nil; -*-
+# vim: set filetype=sh sw=3 sts=3 expandtab autoindent:
+#
+# backupninja handler to copy local backup to remote FTP server
+# feedback: cristian at romanescu dot ro
+#
+#  ftp handler is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU General Public License as published by the Free
+#  Software Foundation; either version 3 of the License, or any later version.
+#
+#  ftp handler is distributed in the hope that it will be useful, but WITHOUT
+#  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+#  more details.
+#
+#  You should have received a copy of the GNU General Public License along with
+#  this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+#  Place - Suite 330, Boston, MA 02111-1307, USA
+#
+# Inspiration
+# -----------
+#
+#  - http://www.mikerubel.org/computers/rsync_snapshots/
+#  - rsnap handler by paulv at bikkel.org
+#  - maildir handler from backupninja
+#
+# Config file options
+# -------------------
+#
+#   [source]
+#   from = local or remote
+
+#   [dest]
+#   dest = backup destination directory
+#   host = destination host name
+#   port = remote port number
+#   user = remote user name
+#   password = remote user name password
+#
+# You can also specify some system comands if you don't want the default system values:
+#
+
+# function definitions
+function eval_config {
+  
+  # source section
+  setsection source
+  getconf from /backup
+ 
+  # dest section
+  setsection dest
+  getconf dest "/backup"
+  getconf host
+  getconf port 21
+  getconf user
+  getconf password
+  
+  IFS=$SAVEIFS
+  set +o noglob
+}
+
+
+# the backup procedure
+eval_config
+dest="$dest/`date +%Y%m%d%H00`"
+
+lftp -e "mirror -R --delete-first $from $dest; quit" -u $user,$password $host:$port
+if [ $? -ne 0 ]; then
+	error "Error uploading backup to remote FTP server!"
+fi
+
+echo "Finishing backup at `date`" >> $log
+
