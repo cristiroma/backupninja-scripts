@@ -6,4 +6,4 @@ hotcopy 	= no
 sqldump		= yes
 compress	= yes
 dbusername	= root
-dbpassword	= p0kemon 
+dbpassword	= secret
